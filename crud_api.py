@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response
 import json
 
 # env FLASK_APP=crud_api.py flask run
@@ -22,18 +22,20 @@ def books():
     """
     # GET -> Fetch all books in the list
     if request.method == 'GET':
-        return json.dumps(books_list, indent=2)
+        json_response = json.dumps(books_list, indent=2)
+        return Response(json_response, status=200, mimetype='application/json')
 
     # POST -> Create a new book in the list
     if request.method == 'POST':
         global id_counter
         id_counter = id_counter + 1
-        books_list[id_counter] = request.json
+        books_list[str(id_counter)] = request.json
         result = {
             "message": "New book created!",
-            "book": books_list[id_counter],
+            "book": books_list[str(id_counter)],
         }
-        return json.dumps(result, indent=2)
+        json_response = json.dumps(result, indent=2)
+        return Response(json_response, status=201, mimetype='application/json')
 
 
 @app.route("/books/<book_id>", methods = ['GET', 'PUT', 'DELETE'])
@@ -45,7 +47,8 @@ def book(book_id):
     """
     # GET -> Fetch a specific book by it's ID
     if request.method == 'GET':
-        return json.dumps(books_list[book_id], indent=2)
+        json_response = json.dumps(books_list[book_id], indent=2)
+        return Response(json_response, status=200, mimetype='application/json')
 
     # PUT -> Update an existing book by it's ID
     if request.method == 'PUT':
@@ -55,11 +58,14 @@ def book(book_id):
             "message": "Book updated!",
             "book": updated_book,
         }
-        return json.dumps(result, indent=2)
+        json_response = json.dumps(result, indent=2)
+        return Response(json_response, status=200, mimetype='application/json')
     
     # DELETE -> Remove a specific book from the list by it's ID
     if request.method == 'DELETE':
-        if book_id in books_list:
+        print(book_id)
+        print(books_list.keys())
+        if book_id in books_list.keys():
             del books_list[book_id]
-        return "Book deleted!"
+        return Response("Book deleted!", status=204, mimetype='application/json')
 

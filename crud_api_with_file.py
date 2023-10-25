@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response
 import os
 import json
 import uuid
@@ -33,7 +33,8 @@ def books():
     """
     # GET -> Fetch all books in the list
     if request.method == 'GET':
-        return json.dumps(books_list, indent=2)
+        json_response = json.dumps(books_list, indent=2)
+        return Response(json_response, status=200, mimetype='application/json')
 
     # POST -> Create a new book in the list
     if request.method == 'POST':
@@ -44,7 +45,8 @@ def books():
             "message": "New book created!",
             "book": books_list[new_id],
         }
-        return json.dumps(result, indent=2)
+        json_response = json.dumps(result, indent=2)
+        return Response(json_response, status=201, mimetype='application/json')
 
 
 @app.route("/books/<book_id>", methods = ['GET', 'PUT', 'DELETE'])
@@ -56,7 +58,8 @@ def book(book_id):
     """
     # GET -> Fetch a specific book by it's ID
     if request.method == 'GET':
-        return json.dumps(books_list[book_id], indent=2)
+        json_response = json.dumps(books_list[book_id], indent=2)
+        return Response(json_response, status=200, mimetype='application/json')
 
     # PUT -> Update an existing book by it's ID
     if request.method == 'PUT':
@@ -67,14 +70,15 @@ def book(book_id):
             "message": "Book updated!",
             "book": updated_book,
         }
-        return json.dumps(result, indent=2)
+        json_response = json.dumps(result, indent=2)
+        return Response(json_response, status=200, mimetype='application/json')
     
     # DELETE -> Remove a specific book from the list by it's ID
     if request.method == 'DELETE':
-        if book_id in books_list:
+        if book_id in books_list.keys():
             del books_list[book_id]
             update_file()
-        return "Book deleted!"
+        return Response("Book deleted!", status=204, mimetype='application/json')
 
 
 if __name__ == "__main__":

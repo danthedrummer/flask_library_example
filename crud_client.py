@@ -14,7 +14,8 @@ def get_all_books():
     GET request to fetch all books
     """
     response = requests.get("http://127.0.0.1:5000/books")
-    print(json.loads(response.content))
+    print(f"Status code: {response.status_code}")
+    print(response.json())
 
 
 def create_new_book(title):
@@ -26,7 +27,8 @@ def create_new_book(title):
         json={"title": title },
         headers={"Content-Type": "application/json"}
     )
-    print(json.loads(response.content))
+    print(f"Status code: {response.status_code}")
+    print(response.json())
 
 
 def get_book(book_id):
@@ -34,7 +36,8 @@ def get_book(book_id):
     GET request to fetch a specific book
     """
     response = requests.get(f"http://127.0.0.1:5000/books/{book_id}")
-    print(json.loads(response.content))
+    print(f"Status code: {response.status_code}")
+    print(response.json())
 
 
 def update_book(book_id, new_title):
@@ -46,7 +49,8 @@ def update_book(book_id, new_title):
         json={"title": new_title },
         headers={"Content-Type": "application/json"}
     )
-    print(response.content)
+    print(f"Status code: {response.status_code}")
+    print(response.json())
 
 
 def delete_book(book_id):
@@ -54,6 +58,7 @@ def delete_book(book_id):
     DELETE request to delete an existing book
     """
     response = requests.delete(f"http://127.0.0.1:5000/books/{book_id}")
+    print(f"Status code: {response.status_code}")
     print(response.content)
 
 
