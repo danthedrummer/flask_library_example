@@ -1,13 +1,5 @@
 import requests
-import json
 
-# Quick explanation of the "json" package:
-#
-# json.loads transforms a JSON string into a Python dictionary
-#
-# json.dumps transforms a Python dictionary into a JSON string
-#   This also optionally allows a parameter called "indent" which
-#   prints the JSON string with nice spacing so it's readable.
 
 def get_all_books():
     """
@@ -24,7 +16,7 @@ def create_new_book(title):
     """
     response = requests.post(
         url="http://127.0.0.1:5000/books",
-        json={"title": title },
+        json={"title": title},
         headers={"Content-Type": "application/json"}
     )
     print(f"Status code: {response.status_code}")
@@ -46,7 +38,7 @@ def update_book(book_id, new_title):
     """
     response = requests.put(
         url=f"http://127.0.0.1:5000/books/{book_id}",
-        json={"title": new_title },
+        json={"title": new_title},
         headers={"Content-Type": "application/json"}
     )
     print(f"Status code: {response.status_code}")

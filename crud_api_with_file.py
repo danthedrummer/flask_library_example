@@ -1,9 +1,17 @@
-from flask import Flask, render_template, request, Response
-import os
 import json
+import os
 import uuid
 
-# env FLASK_APP=crud_api_with_file.py flask run
+from flask import Flask, request, Response
+
+# Quick explanation of the "json" package:
+#
+# json.loads transforms a JSON string into a Python dictionary
+#
+# json.dumps transforms a Python dictionary into a JSON string
+#   This also optionally allows a parameter called "indent" which
+#   prints the JSON string with nice spacing, so it's readable.
+
 app = Flask(__name__)
 
 # This dictionary is like a fake database. It's a collection of data for us to interact with.
@@ -26,7 +34,7 @@ def update_file():
         file.write(json.dumps(books_list, indent=2))
 
 
-@app.route("/books", methods = ['GET', 'POST'])
+@app.route("/books", methods=['GET', 'POST'])
 def books():
     """
     Operating on the collection of books as a whole
@@ -49,19 +57,19 @@ def books():
         return Response(json_response, status=201, mimetype='application/json')
 
 
-@app.route("/books/<book_id>", methods = ['GET', 'PUT', 'DELETE'])
+@app.route("/books/<book_id>", methods=['GET', 'PUT', 'DELETE'])
 def book(book_id):
     """
     Operating on a specific book from the collection
     
     :param book_id: The book_id path parameter
     """
-    # GET -> Fetch a specific book by it's ID
+    # GET -> Fetch a specific book by its ID
     if request.method == 'GET':
         json_response = json.dumps(books_list[book_id], indent=2)
         return Response(json_response, status=200, mimetype='application/json')
 
-    # PUT -> Update an existing book by it's ID
+    # PUT -> Update an existing book by its ID
     if request.method == 'PUT':
         updated_book = request.json
         books_list[book_id] = updated_book
@@ -72,14 +80,10 @@ def book(book_id):
         }
         json_response = json.dumps(result, indent=2)
         return Response(json_response, status=200, mimetype='application/json')
-    
-    # DELETE -> Remove a specific book from the list by it's ID
+
+    # DELETE -> Remove a specific book from the list by its ID
     if request.method == 'DELETE':
         if book_id in books_list.keys():
             del books_list[book_id]
             update_file()
         return Response("Book deleted!", status=204, mimetype='application/json')
-
-
-if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000)
